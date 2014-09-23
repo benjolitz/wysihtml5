@@ -16,13 +16,13 @@
        * Map keyCodes to query commands
        */
       shortcuts = {
-        "66": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "bold"},     // B
-        "73": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "italic"},   // I
-        "85": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "underline"}, // U
-        "72": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "h1"}, //control-H for HEADLINE this.
-        "79": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertUnorderedList"}, //Control O for unordered list
-        "78": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertOrderedList"}, //control n for numbered list.
-        "76": {"behavior": SELECTION_MADE | PASS_SELECTION_AS_VALUE, "command": "createLink"},
+        "B": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "bold"},     // B
+        "I": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "italic"},   // I
+        "U": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "underline"}, // U
+        "H": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "h1"}, //control-H for HEADLINE this.
+        "O": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertUnorderedList"}, //Control O for unordered list
+        "N": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertOrderedList"}, //control n for numbered list.
+        "L": {"behavior": SELECTION_MADE | PASS_SELECTION_AS_VALUE, "command": "createLink"}, //control L
       };
   
   wysihtml5.views.Composer.prototype.observe = function() {
@@ -128,7 +128,7 @@
     // --------- Shortcut logic ---------
     dom.observe(element, "keydown", function(event) {
       var keyCode  = event.keyCode,
-          hotkey  = shortcuts[keyCode];
+          hotkey  = shortcuts[String.fromCharCode(keyCode)];
       if ((event.ctrlKey || event.metaKey) && !event.altKey && hotkey) {
         var selection = that.selection.getSelection();
         var has_selection = !(selection.anchorOffset == selection.focusOffset);
