@@ -45,6 +45,7 @@ JS_FILES = src/wysihtml5.js \
   src/selection/html_applier.js \
   src/commands.js \
   src/commands/bold.js \
+  src/commands/h1.js \
   src/commands/createLink.js \
   src/commands/fontSize.js \
   src/commands/foreColor.js \
@@ -75,7 +76,7 @@ JS_FILES = src/wysihtml5.js \
   src/toolbar/toolbar.js \
   src/editor.js
 
-all: bundle minify
+all: bundle 
 
 bundle:
 	@@echo "Bundling..."

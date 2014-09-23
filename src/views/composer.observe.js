@@ -9,13 +9,20 @@
 (function(wysihtml5) {
   var dom       = wysihtml5.dom,
       browser   = wysihtml5.browser,
+      SELECTION_MADE = 1,
+      NO_SELECTION = 2,
+      PASS_SELECTION_AS_VALUE = 3,
       /**
        * Map keyCodes to query commands
        */
       shortcuts = {
-        "66": "bold",     // B
-        "73": "italic",   // I
-        "85": "underline" // U
+        "66": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "bold"},     // B
+        "73": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "italic"},   // I
+        "85": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "underline"}, // U
+        "72": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "h1"}, //control-H for HEADLINE this.
+        "79": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertUnorderedList"}, //Control O for unordered list
+        "78": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertOrderedList"}, //control n for numbered list.
+        "76": {"behavior": SELECTION_MADE | PASS_SELECTION_AS_VALUE, "command": "createLink"},
       };
   
   wysihtml5.views.Composer.prototype.observe = function() {
@@ -121,9 +128,17 @@
     // --------- Shortcut logic ---------
     dom.observe(element, "keydown", function(event) {
       var keyCode  = event.keyCode,
-          command  = shortcuts[keyCode];
-      if ((event.ctrlKey || event.metaKey) && !event.altKey && command) {
-        that.commands.exec(command);
+          hotkey  = shortcuts[keyCode];
+      if ((event.ctrlKey || event.metaKey) && !event.altKey && hotkey) {
+        var selection = that.selection.getSelection();
+        var has_selection = !(selection.anchorOffset == selection.focusOffset);
+        if ((has_selection && hotkey.behavior & SELECTION_MADE) || !has_selection && hotkey.behavior & NO_SELECTION) {
+          if (hotkey.behavior & PASS_SELECTION_AS_VALUE) {
+            that.commands.exec(hotkey.command, null);
+          } else {
+            that.commands.exec(hotkey.command);
+          }
+        }
         event.preventDefault();
       }
     });

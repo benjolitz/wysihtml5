@@ -63,7 +63,19 @@
         elementToSetCaretAfter = whiteSpace;
       }
     }
-    composer.selection.setAfter(elementToSetCaretAfter);
+    if (!anchor.href) {
+      /*
+      In the Event someone has upgraded text into a Link, simulate a mouse
+      event to trigger the HREF editor.
+      */
+      anchor.setAttribute('href', 'http://');
+      var evt = document.createEvent("MouseEvents");
+      evt.initMouseEvent("click", true, true, window, 1, 0, 0, 0, 0,
+          false, false, false, false, 0, null);
+      anchor.dispatchEvent(evt);
+    } else {
+      composer.selection.setAfter(elementToSetCaretAfter);
+    }
   }
   
   wysihtml5.commands.createLink = {
