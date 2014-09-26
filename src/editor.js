@@ -34,8 +34,8 @@
     {SELECTION_MADE: 1,
      NO_SELECTION: 2,
      PASS_SELECTION_AS_VALUE: 4,
-     CUSTOM_VALUE: 8}), shortcuts = _shortcuts.get();
-  
+     CUSTOM_VALUE: 8}), shortcuts;
+  wysihtml5.shortcut_definitions = shortcuts = _shortcuts.get();
   
   
 

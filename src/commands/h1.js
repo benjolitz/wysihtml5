@@ -9,7 +9,7 @@ wysihtml5.commands.h1 = {
     // chrome:  <b>, <strong>, <h1>, <h2>, ...
     // ie:      <b>, <strong>
     // opera:   <b>, <strong>
-    return wysihtml5.commands.formatInline.state(composer, command, "h1" || value);
+    return wysihtml5.commands.formatInline.state(composer, command, value || "h1");
   }
 };
 
