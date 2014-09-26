@@ -30,8 +30,15 @@
  *    change_view
  */
 (function(wysihtml5) {
-  var undef;
+  var undef, _shortcuts = wysihtml5.lang.object(
+    {SELECTION_MADE: 1,
+     NO_SELECTION: 2,
+     PASS_SELECTION_AS_VALUE: 4,
+     CUSTOM_VALUE: 8}), shortcuts = _shortcuts.get();
   
+  
+  
+
   var defaultConfig = {
     // Give the editor a name, the name will also be set as class name on the iframe and on the iframe's body 
     name:                 undef,
@@ -59,7 +66,48 @@
     // Whether the rich text editor should be rendered on touch devices (wysihtml5 >= 0.3.0 comes with basic support for iOS 5)
     supportTouchDevices:  true,
     // Whether senseless <span> elements (empty or without attributes) should be removed/replaced with their content
-    cleanUp:              true
+    cleanUp:              true,
+    /**
+     * Map keyCodes to query commands. Control+Key
+     */
+    shortcuts: _shortcuts.merge({
+        // Bold
+        "B": {
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.NO_SELECTION,
+            "command": "bold"
+        },
+        // Italicize
+        "I": {
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.NO_SELECTION,
+            "command": "italic"
+        },
+        // Underline
+        "U": {
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.NO_SELECTION,
+            "command": "underline"
+        },
+        "H": {
+        //control-H for HEADLINE this.
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.NO_SELECTION | shortcuts.CUSTOM_VALUE,
+            "command": "h1",
+            "value": "h1"
+        },
+        //Control O for unordered list
+        "O": {
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.NO_SELECTION,
+            "command": "insertUnorderedList"
+        },
+        //control n for numbered list.
+        "N": {
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.NO_SELECTION,
+            "command": "insertOrderedList"
+        },
+        //control L
+        "L": {
+            "behavior": shortcuts.SELECTION_MADE | shortcuts.PASS_SELECTION_AS_VALUE,
+            "command": "createLink"
+        }
+    }).get()
   };
   
   wysihtml5.Editor = wysihtml5.lang.Dispatcher.extend(

@@ -8,22 +8,7 @@
  */
 (function(wysihtml5) {
   var dom       = wysihtml5.dom,
-      browser   = wysihtml5.browser,
-      SELECTION_MADE = 1,
-      NO_SELECTION = 2,
-      PASS_SELECTION_AS_VALUE = 3,
-      /**
-       * Map keyCodes to query commands
-       */
-      shortcuts = {
-        "B": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "bold"},     // B
-        "I": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "italic"},   // I
-        "U": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "underline"}, // U
-        "H": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "h1"}, //control-H for HEADLINE this.
-        "O": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertUnorderedList"}, //Control O for unordered list
-        "N": {"behavior": SELECTION_MADE | NO_SELECTION, "command": "insertOrderedList"}, //control n for numbered list.
-        "L": {"behavior": SELECTION_MADE | PASS_SELECTION_AS_VALUE, "command": "createLink"}, //control L
-      };
+      browser   = wysihtml5.browser;
   
   wysihtml5.views.Composer.prototype.observe = function() {
     var that                = this,
@@ -128,13 +113,17 @@
     // --------- Shortcut logic ---------
     dom.observe(element, "keydown", function(event) {
       var keyCode  = event.keyCode,
-          hotkey  = shortcuts[String.fromCharCode(keyCode)];
+          hotkey  = that.config.shortcuts[String.fromCharCode(keyCode)];
       if ((event.ctrlKey || event.metaKey) && !event.altKey && hotkey) {
         var selection = that.selection.getSelection();
         var has_selection = !(selection.anchorOffset == selection.focusOffset);
-        if ((has_selection && hotkey.behavior & SELECTION_MADE) || !has_selection && hotkey.behavior & NO_SELECTION) {
-          if (hotkey.behavior & PASS_SELECTION_AS_VALUE) {
+        if ((has_selection &&
+              hotkey.behavior & that.config.shortcuts.SELECTION_MADE) ||
+              !has_selection && hotkey.behavior & that.config.shortcuts.NO_SELECTION) {
+          if (hotkey.behavior & that.config.shortcuts.PASS_SELECTION_AS_VALUE) {
             that.commands.exec(hotkey.command, null);
+          } else if (hotkey.behavior & that.config.shortcuts.CUSTOM_VALUE) {
+            that.commands.exec(hotkey.command, hotkey.value);
           } else {
             that.commands.exec(hotkey.command);
           }
